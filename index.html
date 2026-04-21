@@ -141,6 +141,55 @@
             border-color: #667eea;
         }
 
+        .kdp-toggle {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .btn-kdp-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-kdp-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .toggle-arrow {
+            transition: transform 0.3s;
+        }
+
+        .toggle-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .kdp-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f8ff;
+            border-radius: 12px;
+            border: 2px dashed #667eea;
+        }
+
+        .kdp-hint {
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
         .buttons {
             display: flex;
             gap: 15px;
@@ -545,8 +594,14 @@
                 </div>
             </div>
 
-            <div class="kdp-section">
-                <h4>📚 KDP Book Generator</h4>
+            <div class="kdp-toggle">
+                <button class="btn btn-kdp-toggle" onclick="toggleKDPOptions()">
+                    📚 KDP Options
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div class="kdp-section" id="kdpSection" style="display: none;">
                 <div class="kdp-grid">
                     <div class="control-group">
                         <label><input type="checkbox" id="includeEasy" checked> Easy puzzles</label>
@@ -565,6 +620,7 @@
                         <input type="number" id="expertCount" value="5" min="1" max="100" class="count-input">
                     </div>
                 </div>
+                <p class="kdp-hint">Generate entire puzzle books with multiple difficulty levels</p>
             </div>
 
             <div class="buttons">
@@ -764,30 +820,52 @@
         let currentSolutions = [];
         let puzzleNumber = 0;
 
+        function toggleKDPOptions() {
+            const section = document.getElementById('kdpSection');
+            const arrow = document.querySelector('.toggle-arrow');
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                arrow.classList.add('open');
+            } else {
+                section.style.display = 'none';
+                arrow.classList.remove('open');
+            }
+        }
+
         function generatePuzzles() {
             const size = parseInt(document.getElementById('gridSize').value);
             const puzzlesPerPage = parseInt(document.getElementById('puzzlesPerPage').value);
             const solutionsOption = document.getElementById('includeSolutions').value;
             const paperSize = document.getElementById('paperSize').value;
 
-            // Get KDP settings
-            const difficulties = [];
-            if (document.getElementById('includeEasy').checked) {
-                difficulties.push({ name: 'easy', count: parseInt(document.getElementById('easyCount').value) || 10 });
-            }
-            if (document.getElementById('includeMedium').checked) {
-                difficulties.push({ name: 'medium', count: parseInt(document.getElementById('mediumCount').value) || 10 });
-            }
-            if (document.getElementById('includeHard').checked) {
-                difficulties.push({ name: 'hard', count: parseInt(document.getElementById('hardCount').value) || 10 });
-            }
-            if (document.getElementById('includeExpert').checked) {
-                difficulties.push({ name: 'expert', count: parseInt(document.getElementById('expertCount').value) || 5 });
-            }
+            // Check if KDP options are visible (KDP mode) or hidden (simple mode)
+            const kdpVisible = document.getElementById('kdpSection').style.display !== 'none';
 
-            if (difficulties.length === 0) {
-                alert('Please select at least one difficulty level!');
-                return;
+            // Get difficulties based on mode
+            let difficulties = [];
+            
+            if (kdpVisible) {
+                // KDP mode - use checkboxes
+                if (document.getElementById('includeEasy').checked) {
+                    difficulties.push({ name: 'easy', count: parseInt(document.getElementById('easyCount').value) || 10 });
+                }
+                if (document.getElementById('includeMedium').checked) {
+                    difficulties.push({ name: 'medium', count: parseInt(document.getElementById('mediumCount').value) || 10 });
+                }
+                if (document.getElementById('includeHard').checked) {
+                    difficulties.push({ name: 'hard', count: parseInt(document.getElementById('hardCount').value) || 10 });
+                }
+                if (document.getElementById('includeExpert').checked) {
+                    difficulties.push({ name: 'expert', count: parseInt(document.getElementById('expertCount').value) || 5 });
+                }
+                
+                if (difficulties.length === 0) {
+                    alert('Please select at least one difficulty level!');
+                    return;
+                }
+            } else {
+                // Simple mode - just generate 1 page of medium puzzles
+                difficulties.push({ name: 'medium', count: puzzlesPerPage });
             }
 
             // Adjust paper size for print
