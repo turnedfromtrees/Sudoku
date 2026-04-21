@@ -391,8 +391,7 @@
                     <label for="includeSolutions">Solutions</label>
                     <select id="includeSolutions">
                         <option value="none" selected>No solutions</option>
-                        <option value="last">Last page only</option>
-                        <option value="each">After each puzzle</option>
+                        <option value="last">Solutions on separate page</option>
                     </select>
                 </div>
             </div>
@@ -600,15 +599,12 @@
                 currentSolutions.push(solution);
 
                 html += renderPuzzle(puzzle, i + 1);
-
-                if (solutionsOption === 'each') {
-                    html += renderPuzzle(solution, i + 1, true);
-                }
             }
 
-            // Add solutions at the end if requested
+            // Add solutions on separate page if requested
             if (solutionsOption === 'last') {
                 html += '<div style="page-break-before: always;"></div>';
+                html += '<div class="puzzles-header"><h2>Solutions</h2></div>';
                 for (let i = 0; i < currentSolutions.length; i++) {
                     html += renderPuzzle(currentSolutions[i], i + 1, true);
                 }
