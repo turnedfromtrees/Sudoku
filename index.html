@@ -138,6 +138,16 @@
             box-shadow: 0 6px 20px rgba(17, 153, 142, 0.5);
         }
 
+        .btn-canva {
+            background: linear-gradient(135deg, #7b2ff7 0%, #f107a3 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(123, 47, 247, 0.4);
+        }
+
+        .btn-canva:hover {
+            box-shadow: 0 6px 20px rgba(123, 47, 247, 0.5);
+        }
+
         .puzzles-container {
             background: white;
             border-radius: 16px;
@@ -260,6 +270,58 @@
         }
 
         /* AdSense placeholder */
+        .ad-container {
+            background: #f8f8f8;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .ad-container h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .affiliate-disclosure {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .book-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .book-link {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+
+        .kdp-note {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            color: #2e7d32;
+            margin: 0;
+        }
+
         .ad-container {
             background: #f8f8f8;
             border: 2px dashed #ddd;
@@ -412,12 +474,32 @@
                     </svg>
                     Print
                 </button>
+                <button class="btn btn-canva" onclick="exportToCanva()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M3 9h18"/>
+                        <path d="M9 21V9"/>
+                    </svg>
+                    Open in Canva
+                </button>
             </div>
         </div>
 
         <div class="ad-container">
-            <!-- AdSense will go here -->
-            <p>Advertisement Space</p>
+            <h3>📖 Recommended Puzzle Books</h3>
+            <p class="affiliate-disclosure">As an Amazon Associate, we earn from qualifying purchases.</p>
+            <div class="book-links">
+                <a href="https://www.amazon.com/s?k=sudoku+puzzle+book&tag=YOUR-AFFILIATE-ID-20" target="_blank" rel="noopener" class="book-link">
+                    Sudoku Puzzle Books →
+                </a>
+                <a href="https://www.amazon.com/s?k=large+print+sudoku&tag=YOUR-AFFILIATE-ID-20" target="_blank" rel="noopener" class="book-link">
+                    Large Print Sudoku →
+                </a>
+                <a href="https://www.amazon.com/s?k=brain+games+puzzle+book&tag=YOUR-AFFILIATE-ID-20" target="_blank" rel="noopener" class="book-link">
+                    Brain Games →
+                </a>
+            </div>
+            <p class="kdp-note">📚 Creating puzzle books for KDP? Our puzzles are free for commercial use.</p>
         </div>
 
         <div class="puzzles-container" id="puzzlesContainer">
@@ -619,6 +701,15 @@
                 return;
             }
             window.print();
+        }
+
+        function exportToCanva() {
+            if (currentPuzzles.length === 0) {
+                alert('Please generate puzzles first!');
+                return;
+            }
+            // Open Canva with affiliate link - replace YOUR-AFFILIATE-ID with your Canva affiliate ID
+            window.open('https://www.canva.com/templates/?query=puzzle&ref=YOUR-CANVA-AFFILIATE-ID', '_blank');
         }
     </script>
 </body>
