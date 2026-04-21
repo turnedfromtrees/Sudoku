@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Printable Sudoku Puzzles | sudokuprint.uk</title>
+    <title>Free Printable Sudoku Puzzles | Puzzle Engine</title>
     <meta name="description" content="Generate free printable Sudoku puzzles in multiple sizes and difficulty levels. Print 4x4, 6x6, 9x9 Sudoku puzzles with solutions.">
-    <meta name="keywords" content="sudoku printable, sudoku generator, free sudoku puzzles, sudoku 4x4, sudoku 6x6, sudoku 9x9">
+    <meta name="keywords" content="sudoku printable, sudoku generator, free sudoku puzzles, sudoku 4x4, sudoku 6x6, sudoku 9x9, puzzle engine">
     
     <style>
         * {
@@ -138,14 +138,14 @@
             box-shadow: 0 6px 20px rgba(17, 153, 142, 0.5);
         }
 
-        .btn-canva {
-            background: linear-gradient(135deg, #7b2ff7 0%, #f107a3 100%);
+        .btn-export {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(123, 47, 247, 0.4);
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
         }
 
-        .btn-canva:hover {
-            box-shadow: 0 6px 20px rgba(123, 47, 247, 0.5);
+        .btn-export:hover {
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.5);
         }
 
         .puzzles-container {
@@ -474,13 +474,13 @@
                     </svg>
                     Print
                 </button>
-                <button class="btn btn-canva" onclick="exportToCanva()">
+                <button class="btn btn-export" onclick="exportToImage()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <path d="M3 9h18"/>
-                        <path d="M9 21V9"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <path d="M21 15l-5-5L5 21"/>
                     </svg>
-                    Open in Canva
+                    Export PNG
                 </button>
             </div>
         </div>
@@ -640,7 +640,7 @@
             html += `</table>
                 </div>
                 <div class="puzzle-footer">
-                    sudokuprint.uk — Free Printable Sudoku Puzzles
+                    puzzle-engine.com — Free Printable Sudoku Puzzles
                 </div>
             </div>`;
 
@@ -703,13 +703,87 @@
             window.print();
         }
 
-        function exportToCanva() {
+        function exportToImage() {
             if (currentPuzzles.length === 0) {
                 alert('Please generate puzzles first!');
                 return;
             }
-            // Open Canva with affiliate link - replace YOUR-AFFILIATE-ID with your Canva affiliate ID
-            window.open('https://www.canva.com/templates/?query=puzzle&ref=YOUR-CANVA-AFFILIATE-ID', '_blank');
+            
+            const container = document.getElementById('puzzlesContainer');
+            
+            // Create a canvas from the puzzles container
+            const puzzles = container.querySelectorAll('.puzzle-page');
+            
+            puzzles.forEach((puzzle, index) => {
+                // Use html2canvas if available, otherwise create a simple text version
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const size = currentPuzzles[0].length;
+                const cellSize = 40;
+                const padding = 20;
+                const headerHeight = 40;
+                const footerHeight = 30;
+                
+                canvas.width = size * cellSize + padding * 2;
+                canvas.height = headerHeight + size * cellSize + padding * 2 + footerHeight;
+                
+                // White background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Title
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Puzzle ${index + 1}`, canvas.width / 2, 25);
+                
+                // Draw grid
+                const grid = currentPuzzles[index];
+                const startX = padding;
+                const startY = headerHeight + padding;
+                
+                for (let i = 0; i <= size; i++) {
+                    // Horizontal lines
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY + i * cellSize);
+                    ctx.lineTo(startX + size * cellSize, startY + i * cellSize);
+                    ctx.strokeStyle = i % (size === 9 ? 3 : size === 6 ? (i % 2 === 0 ? 2 : 1) : size) === 0 ? '#333' : '#999';
+                    ctx.lineWidth = i % (size === 9 ? 3 : 2) === 0 ? 2 : 1;
+                    ctx.stroke();
+                    
+                    // Vertical lines
+                    ctx.beginPath();
+                    ctx.moveTo(startX + i * cellSize, startY);
+                    ctx.lineTo(startX + i * cellSize, startY + size * cellSize);
+                    ctx.stroke();
+                }
+                
+                // Draw numbers
+                ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                for (let row = 0; row < size; row++) {
+                    for (let col = 0; col < size; col++) {
+                        const value = grid[row][col];
+                        if (value !== 0) {
+                            ctx.fillStyle = '#333';
+                            ctx.fillText(value, startX + col * cellSize + cellSize / 2, startY + row * cellSize + cellSize / 2);
+                        }
+                    }
+                }
+                
+                // Footer
+                ctx.fillStyle = '#666';
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillText('puzzle-engine.com', canvas.width / 2, canvas.height - 15);
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = `sudoku-puzzle-${index + 1}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         }
     </script>
 </body>
